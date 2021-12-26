@@ -1,4 +1,6 @@
-from os import getcwd, chdir, listdir, pipe, system
+from os import getcwd, chdir, listdir, system
+from pathlib import Path
+from posixpath import relpath
 from subprocess import PIPE, Popen
 from colorama import init, Fore
 from colorama.ansi import Style
@@ -41,6 +43,17 @@ class Terminal:
             elif command.startswith("ls"):
                 self.__ls(command[2:])
 
+            elif command == "start":
+                path_file = Path(__file__).parent + "terminalHt.exe"
+                process = Popen(path_file, shell=True,stdout=PIPE, stdin=PIPE, stderr=PIPE)  # aqui
+                out, err = process.communicate()
+                result = out + err
+                if len(result)>0:
+                    try:
+                        print(result.decode(), end="")
+                    except:
+                        print(result.decode('windows-1252'))
+                
             else:
                 if command.startswith("cd"):
                     chdir(command[3:].strip())
